@@ -1,5 +1,5 @@
 import React from "react";
-import logo from "../../../public/logo.gif";
+import logo from "../../assets/logo.gif";
 import {
   MdAccountCircle,
   MdBarChart,
@@ -8,6 +8,7 @@ import {
   MdOutlineToggleOn,
   MdRadioButtonUnchecked,
 } from "react-icons/md";
+import { Link } from "react-router-dom";
 const ProfileModal = ({ profile, setprofle }) => {
   return (
     <>
@@ -23,9 +24,11 @@ const ProfileModal = ({ profile, setprofle }) => {
           </div>
           <hr />
 
-          <div className="flex text-base py-2 font-semibold items-center  gap-3 cursor-pointer hover:bg-slate-200 rounded-md p-1">
-            <MdAccountCircle className="text-2xl  " /> <p>My account</p>
-          </div>
+          <Link to={"/profile"}>
+            <div className="flex text-base py-2 font-semibold items-center  gap-3 cursor-pointer hover:bg-slate-200 rounded-md p-1">
+              <MdAccountCircle className="text-2xl  " /> <p>My account</p>
+            </div>
+          </Link>
           <div className="flex text-base py-2 font-semibold items-center  gap-3 cursor-pointer hover:bg-slate-200 rounded-md p-1">
             <MdBarChart className="text-2xl " /> <p>My blogs</p>
           </div>

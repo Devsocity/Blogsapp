@@ -6,9 +6,11 @@ import {
   MdBarChart,
 } from "react-icons/md";
 import { TbArrowBadgeLeftFilled, TbArticleFilledFilled } from "react-icons/tb";
-import logo from "../../public/logo.gif";
+import logo from "../assets/logo.gif";
 import SeachModdel from "./modals/SeachModal";
 import ProfileModal from "./modals/ProfileModal";
+import ProfileUpdate from "./modals/ProfileUpdate";
+import { Link } from "react-router-dom";
 const Header = () => {
   const [manu, setmanu] = useState(false);
   const [search, setsearch] = useState(false);
@@ -20,11 +22,13 @@ const Header = () => {
 
       {/* logo start */}
 
-      <img
-        className="w-32 object-cover cursor-pointer ms-24 sm:ms-0 "
-        src={logo}
-        alt="Blog app"
-      />
+      <Link to={"/"}>
+        <img
+          className="w-32 object-cover cursor-pointer ms-24 sm:ms-0 "
+          src={logo}
+          alt="Blog app"
+        />
+      </Link>
       {/* logo end */}
 
       {/* center manu start */}

@@ -1,5 +1,5 @@
 import React from "react";
-import banner from "../../public/1322308.jpeg";
+import banner from "../assets/1322308.jpeg";
 import { MdLogoDev } from "react-icons/md";
 import { TbBookmark, TbHeart, TbMessage, TbMoodHeart } from "react-icons/tb";
 

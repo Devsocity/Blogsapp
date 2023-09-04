@@ -1,6 +1,6 @@
 import React from "react";
 import { MdArrowForward, MdForward } from "react-icons/md";
-import image from "../../public/1322308.jpeg";
+import image from "../assets/1322308.jpeg";
 import { TbBookmark, TbHeart, TbMessage } from "react-icons/tb";
 
 const Blogbanner = () => {

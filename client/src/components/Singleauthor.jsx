@@ -1,5 +1,5 @@
 import React from "react";
-import image from "../../public/1322308.jpeg";
+import image from "../assets/1322308.jpeg";
 import { MdArrowForward, MdJoinLeft, MdSwipeLeftAlt } from "react-icons/md";
 const Singleauthor = () => {
   return (
