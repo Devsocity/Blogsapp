@@ -4,6 +4,7 @@ import bcrypt from 'bcrypt';
 import User from '../models/User.js';
 import Post from '../models/Post.js';
 import { sendMail } from '../utils/sendMail.js';
+import { dotToUnderscoreReplace, underscoreToDotReplace } from '../utils/dotToUnderscoreReplace.js';
 
 /**
  * @DESC Login User
@@ -28,14 +29,17 @@ export const userLogin = asyncHandler(async (req, res) => {
 
   if (!user.isVerified) {
     // create verify token
-    // const token = JWT.sign({ _id: user._id, email: user.email }, process.env.EMAIL_VERIFY_TOKEN_SECRET, {
-    //   expiresIn: '15m'
-    // });
+    const token = JWT.sign({ _id: user._id, email: user.email }, process.env.EMAIL_VERIFY_TOKEN_SECRET, {
+      expiresIn: '1d'
+    });
 
-    // const link = `${process.env.BASE_URL}/verify/${token}`;
+    // <!-- Dot To underScore Replace Token -->
+    const dotToUnderscoreReplaceToken = dotToUnderscoreReplace(token);
+
+    const link = `${process.env.BASE_URL}/verify/${dotToUnderscoreReplaceToken}`;
 
     // send email
-    // await sendMail({ to: user.email, sub: 'Verify Account', name: user.username, msg: 'To activate your Account, please verify your email address.', link });
+    await sendMail({ to: user.email, sub: 'Verify Account', name: user.username, msg: 'To activate your Account, please verify your email address.', link });
 
     return res.status(400).json({ message: 'We sent an email please verify your account!' });
   }
@@ -103,10 +107,13 @@ export const userRegister = asyncHandler(async (req, res) => {
   if (user) {
     // create verify token
     const token = JWT.sign({ _id: user._id, email: user.email }, process.env.EMAIL_VERIFY_TOKEN_SECRET, {
-      expiresIn: '15m'
+      expiresIn: '1d'
     });
 
-    const link = `${process.env.BASE_URL}/verify/${token}`;
+    // <!-- Dot To underScore Replace Token -->
+    const dotToUnderscoreReplaceToken = dotToUnderscoreReplace(token);
+
+    const link = `${process.env.BASE_URL}/verify/${dotToUnderscoreReplaceToken}`;
 
     // send email
     await sendMail({ to: user.email, sub: 'Verify Account', name: user.username, msg: 'To activate your Account, please verify your email address. Your account will not be created until your email address is confirmed.', link });
@@ -115,37 +122,6 @@ export const userRegister = asyncHandler(async (req, res) => {
   } else {
     return res.status(400).json({ message: 'Invalid user data. Try Again!' });
   }
-});
-
-/**
- * @DESC Logout User
- * @ROUTE /api/v1/auth/logout
- * @method POST
- * @access public
- */
-export const userLogout = asyncHandler((req, res) => {
-  res.status(200).clearCookie('aToken').json({ message: 'Logout success.' });
-});
-
-/**
- * @DESC logged In user
- * @ROUTE /api/v1/auth/me
- * @method GET
- * @access public
- */
-export const me = asyncHandler(async (req, res) => {
-  const users = await User.find().populate(['followers', 'following']);
-  const posts = await Post.find()
-    .populate({
-      path: 'comment',
-      populate: {
-        path: 'commentedUserId',
-        model: 'User'
-      }
-    })
-    .populate(['postedUserId', 'like', 'category']);
-
-  res.status(200).json({ user: req.me, users, posts, message: 'Logged in user.' });
 });
 
 /**
@@ -159,8 +135,11 @@ export const registerVerifyToken = asyncHandler(async (req, res) => {
 
   if (!token) return res.status(400).json({ message: 'Token not found!' });
 
+  // <!--  UnderScore To Dot Replace Token -->
+  const underscoreToDotReplaceToken = underscoreToDotReplace(token);
+
   JWT.verify(
-    token,
+    underscoreToDotReplaceToken,
     process.env.EMAIL_VERIFY_TOKEN_SECRET,
     asyncHandler(async (error, decode) => {
       if (error) {
@@ -199,6 +178,37 @@ export const registerVerifyToken = asyncHandler(async (req, res) => {
         .json({ token: accessToken, user, users, posts, message: 'Account Verify successful.' });
     })
   );
+});
+
+/**
+ * @DESC Logout User
+ * @ROUTE /api/v1/auth/logout
+ * @method POST
+ * @access public
+ */
+export const userLogout = asyncHandler((req, res) => {
+  res.status(200).clearCookie('aToken').json({ message: 'Logout success.' });
+});
+
+/**
+ * @DESC logged In user
+ * @ROUTE /api/v1/auth/me
+ * @method GET
+ * @access public
+ */
+export const me = asyncHandler(async (req, res) => {
+  const users = await User.find().populate(['followers', 'following']);
+  const posts = await Post.find()
+    .populate({
+      path: 'comment',
+      populate: {
+        path: 'commentedUserId',
+        model: 'User'
+      }
+    })
+    .populate(['postedUserId', 'like', 'category']);
+
+  res.status(200).json({ user: req.me, users, posts, message: 'Logged in user.' });
 });
 
 /**
